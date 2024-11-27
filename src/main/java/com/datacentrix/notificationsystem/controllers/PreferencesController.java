@@ -20,11 +20,9 @@ public class PreferencesController {
         return ResponseEntity.ok(preferencesService.getPreferencesForUser(userId));
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<Void> savePreferences(
-            @PathVariable Long userId,
-            @RequestBody List<Preference> preferencesRequests) {
-        preferencesService.savePreferences(userId, preferencesRequests);
+    @PostMapping()
+    public ResponseEntity<Void> AddPreferences(@PathVariable Long userId,@RequestBody List<Preference> request) {
+        preferencesService.AddPreferences(userId, request);
         return ResponseEntity.ok().build();
     }
 }

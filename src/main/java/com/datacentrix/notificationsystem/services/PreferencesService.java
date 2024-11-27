@@ -18,7 +18,7 @@ public class PreferencesService {
         return preferenceRepository.findByUserId(userId);
     }
 
-    public void savePreferences(Long userId, List<Preference> preferencesRequests) {
+    public void AddPreferences(Long userId, List<Preference> preferencesRequests) {
         List<Preference> preferences = preferencesRequests.stream()
                 .map(req -> Preference.builder()
                         .user(User.builder().id(userId).build())
