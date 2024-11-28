@@ -18,12 +18,14 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
         notificationService.sendNotification(notification);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userId}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Notification>> getNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getNotificationsForUser(userId));
     }

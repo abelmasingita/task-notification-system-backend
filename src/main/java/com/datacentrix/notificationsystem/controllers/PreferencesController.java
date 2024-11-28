@@ -18,11 +18,13 @@ public class PreferencesController {
     private final PreferencesService preferencesService;
 
     @GetMapping("/{userId}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Preference>> getPreferences(@PathVariable Long userId) {
         return ResponseEntity.ok(preferencesService.getPreferencesForUser(userId));
     }
 
     @PostMapping("/{userId}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Void> AddPreferences(@PathVariable Long userId,@RequestBody List<Preference> request) {
         preferencesService.AddPreferences(userId, request);
         return ResponseEntity.ok().build();
