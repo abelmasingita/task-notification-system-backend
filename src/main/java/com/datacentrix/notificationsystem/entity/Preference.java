@@ -18,6 +18,6 @@ public class Preference {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String notificationType;
+    private String notification_type;
     private Boolean enabled = true;
 }

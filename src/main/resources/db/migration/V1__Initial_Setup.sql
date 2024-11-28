@@ -1,7 +1,9 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100)
+    email VARCHAR(50) NOT NULL,
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    username VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE notifications (
