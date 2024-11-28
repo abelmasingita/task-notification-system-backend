@@ -15,3 +15,4 @@ spring:
     port: 6379
   websocket:
     enabled: true
+
