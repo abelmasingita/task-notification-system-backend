@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/notificationsystem-db
+    url: jdbc:postgresql://localhost:5432/notificationsystemdb
     username: abelmasingita
     password: 123qwe
   jpa:
