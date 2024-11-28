@@ -1,6 +1,7 @@
 package com.datacentrix.notificationsystem.entity;
 
 
+import com.datacentrix.notificationsystem.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -17,14 +18,14 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    @Column(nullable = false)
     private String message;
-    private Boolean read = false;
 
-    @Column(name = "created_at")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "notification_type",nullable = false)
+    private NotificationType notificationType;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 }
 

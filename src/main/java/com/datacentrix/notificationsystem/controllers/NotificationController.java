@@ -29,9 +29,9 @@ public class NotificationController {
     public ResponseEntity<List<Notification>> getNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getNotificationsForUser(userId));
     }
-//
-//    @GetMapping()
-//    public ResponseEntity<List<Notification>> getAll() {
-//        return ResponseEntity.ok(notificationService.());
-//    }
+
+    @GetMapping()
+    public ResponseEntity<List<Notification>> getAll() {
+        return ResponseEntity.ok(notificationService.getAll());
+    }
 }

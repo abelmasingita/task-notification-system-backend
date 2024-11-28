@@ -17,16 +17,22 @@ public class PreferencesController {
     @Autowired
     private final PreferencesService preferencesService;
 
+    @GetMapping()
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<Preference>> GetAll() {
+        return ResponseEntity.ok(preferencesService.getAll());
+    }
+
     @GetMapping("/{userId}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<Preference>> getPreferences(@PathVariable Long userId) {
         return ResponseEntity.ok(preferencesService.getPreferencesForUser(userId));
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping()
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Void> AddPreferences(@PathVariable Long userId,@RequestBody List<Preference> request) {
-        preferencesService.AddPreferences(userId, request);
+    public ResponseEntity<Void> AddPreferences(@RequestBody List<Preference> request) {
+        preferencesService.AddPreferences(request);
         return ResponseEntity.ok().build();
     }
 }
