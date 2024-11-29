@@ -57,17 +57,30 @@ public class NotificationService {
 
     // Method to get notifications for a specific user based on their preferences
     public List<Notification> getNotificationsForUser(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            List<Preference> preferences = notificationPreferenceRepository.findByUser(user.get());
-            List<Notification> notifications = preferences.stream()
-                    //.filter(pref -> pref.isEnabled())
-                    .map(pref -> notificationRepository.findBynotificationType(String.valueOf(pref.getNotificationType())))
-                    .flatMap(List::stream)
-                    .toList();
-            return notifications;
-        } else {
-            throw new RuntimeException("User not found");
+
+        try {
+            // Find the user by ID
+            Optional<User> user = userRepository.findById(userId);
+
+            if (user.isPresent()) {
+                // Fetch the preferences for the user
+                List<Preference> preferences = notificationPreferenceRepository.findByUser(user.get());
+
+                return preferences.stream()
+                        .filter(Preference::getIsEnabled)
+                        .map(pref -> {
+                            NotificationType notificationType = NotificationType.valueOf(pref.getNotificationType().name());
+                            return notificationRepository.findBynotificationType(notificationType);
+                        })
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList());
+            } else {
+                throw new RuntimeException("User not found");
+            }
+        } catch (Exception e) {
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.error("Error fetching notifications: ", e);
+            return Collections.emptyList();
         }
     }
     public List<Notification> getAll() {
