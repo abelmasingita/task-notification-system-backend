@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationService {
 
+    @Autowired
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
