@@ -13,6 +13,8 @@ spring:
   redis:
     host: localhost
     port: 6379
+    password: 123qwe
+    database: 0
   websocket:
     enabled: true
 

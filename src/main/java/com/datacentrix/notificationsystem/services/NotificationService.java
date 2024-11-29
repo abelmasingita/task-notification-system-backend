@@ -21,6 +21,9 @@ public class NotificationService {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
+    private final NotificationCacheService notificationCacheService;
+
+    @Autowired
     private NotificationRepository notificationRepository;
 
     @Autowired
@@ -50,6 +53,9 @@ public class NotificationService {
                 messagingTemplate.convertAndSend(destination, notification);
            }
 
+            // Cache the updated list of notifications
+            notificationCacheService.cacheNotifications(notification);
+
         } catch (Exception e) {
             Logger logger = LoggerFactory.getLogger(this.getClass());
             logger.error("Error saving notification: ", e);
@@ -66,6 +72,12 @@ public class NotificationService {
             if (user.isPresent()) {
                 // Fetch the preferences for the user
                 List<Preference> preferences = notificationPreferenceRepository.findByUser(user.get());
+
+                List<Notification> cachedNotifications = notificationCacheService.getNotificationsFromCache();
+                if (!cachedNotifications.isEmpty()) {
+                    //return notifications from cache
+                    return cachedNotifications;
+                }
 
                 return preferences.stream()
                         .filter(Preference::getIsEnabled)
