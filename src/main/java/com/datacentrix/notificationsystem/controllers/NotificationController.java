@@ -31,6 +31,7 @@ public class NotificationController {
     }
 
     @GetMapping()
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Notification>> getAll() {
         return ResponseEntity.ok(notificationService.getAll());
     }

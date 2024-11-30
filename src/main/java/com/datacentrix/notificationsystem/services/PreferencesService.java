@@ -50,7 +50,6 @@ public class PreferencesService {
                             .notificationType(req.getNotificationType())
                             .isEnabled(req.getIsEnabled())
                             .createdAt(LocalDateTime.now())
-                            //.updatedAt(LocalDateTime.now())
                             .build())
                     .collect(Collectors.toList());
 
