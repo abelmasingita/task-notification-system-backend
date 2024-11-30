@@ -24,8 +24,6 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
 
-        //UserDTO
-
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
         } else {
