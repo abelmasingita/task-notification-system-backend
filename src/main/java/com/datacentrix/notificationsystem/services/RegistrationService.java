@@ -1,7 +1,9 @@
 package com.datacentrix.notificationsystem.services;
 
 import com.datacentrix.notificationsystem.dto.RegistrationDto;
+import com.datacentrix.notificationsystem.dto.UserDTO;
 import com.datacentrix.notificationsystem.entity.User;
+import com.datacentrix.notificationsystem.helper.UserMapper;
 import com.datacentrix.notificationsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -18,7 +22,7 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(RegistrationDto registrationDto) {
+    public UserDTO registerUser(RegistrationDto registrationDto) {
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
         }
@@ -33,6 +37,7 @@ public class RegistrationService {
         user.setEmail(registrationDto.getEmail());
 
         userRepository.save(user);
+        return userMapper.toDTO(user);
     }
 }
 

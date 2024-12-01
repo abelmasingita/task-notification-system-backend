@@ -1,7 +1,11 @@
 package com.datacentrix.notificationsystem.services;
 
+import com.datacentrix.notificationsystem.dto.NotificationDto;
+import com.datacentrix.notificationsystem.dto.UserDTO;
 import com.datacentrix.notificationsystem.entity.*;
 import com.datacentrix.notificationsystem.enums.NotificationType;
+import com.datacentrix.notificationsystem.helper.NotificationMapper;
+import com.datacentrix.notificationsystem.helper.UserMapper;
 import com.datacentrix.notificationsystem.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,38 +37,42 @@ public class NotificationService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
 
-    public void sendNotification(Notification request) {
+    @Autowired
+    private UserMapper userMapper;
+
+    public NotificationDto sendNotification(NotificationDto request) {
 
         try {
-            Notification notification = new Notification();
-            notification.setMessage(request.getMessage());
-            notification.setCreatedAt(request.getCreatedAt());
-            notification.setNotificationType(request.getNotificationType());
 
+            request.setCreatedAt(LocalDateTime.now());
+            Notification notification =  notificationMapper.fromDTO(request);
             notificationRepository.save(notification);
-
+            request = notificationMapper.toDTO(notification);
 
             // Identify relevant users based on their preferences for this notification type
-            List<User> relevantUsers = getRelevantUsersForNotification(String.valueOf(request.getNotificationType()));
+            List<UserDTO> relevantUsers = getRelevantUsersForNotification(String.valueOf(request.getNotificationType()));
 
             // Send the notification to the relevant users using WebSocket
-           for (User user : relevantUsers) {
+           for (UserDTO user : relevantUsers) {
                 String destination = "/topic/notifications/" + user.getId();
                 messagingTemplate.convertAndSend(destination, notification);
            }
 
             // Cache the updated list of notifications
             notificationCacheService.cacheNotifications(notification);
-
+            return request;
         } catch (Exception e) {
             Logger logger = LoggerFactory.getLogger(this.getClass());
             logger.error("Error saving notification: ", e);
+            return null;
         }
     }
 
     // Method to get notifications for a specific user based on their preferences
-    public List<Notification> getNotificationsForUser(Long userId) {
+    public List<NotificationDto> getNotificationsForUser(Long userId) {
 
         try {
             // Find the user by ID
@@ -76,17 +85,17 @@ public class NotificationService {
                 List<Notification> cachedNotifications = notificationCacheService.getNotificationsFromCache();
                 if (!cachedNotifications.isEmpty()) {
                     //return notifications from cache
-                    return cachedNotifications;
+                    return notificationMapper.toDtoList(cachedNotifications);
                 }
 
-                return preferences.stream()
+                return notificationMapper.toDtoList(preferences.stream()
                         .filter(Preference::getIsEnabled)
                         .map(pref -> {
                             NotificationType notificationType = NotificationType.valueOf(pref.getNotificationType().name());
                             return notificationRepository.findBynotificationType(notificationType);
                         })
                         .flatMap(List::stream)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
             } else {
                 throw new RuntimeException("User not found");
             }
@@ -96,10 +105,10 @@ public class NotificationService {
             return Collections.emptyList();
         }
     }
-    public List<Notification> getAll() {
+    public List<NotificationDto> getAll() {
 
         try {
-            return notificationRepository.findAll();
+           return notificationMapper.toDtoList(notificationRepository.findAll());
         } catch (Exception e) {
             Logger logger = LoggerFactory.getLogger(this.getClass());
             logger.error("Error fetching notifications: ", e);
@@ -107,8 +116,8 @@ public class NotificationService {
         }
     }
 
-    // Get relevant users based on their notification preferences
-    public List<User> getRelevantUsersForNotification(String notificationType) {
+    // Get relevant users based on their notification preferences settings
+    public List<UserDTO> getRelevantUsersForNotification(String notificationType) {
 
         if (notificationType == null || notificationType.isEmpty()) {
             throw new IllegalArgumentException("Notification type must not be null or empty.");
@@ -122,10 +131,11 @@ public class NotificationService {
             throw new IllegalArgumentException("Invalid notification type: " + notificationType, e);
         }
 
-        List<Preference> preferences = notificationPreferenceRepository.findByNotificationType(notificationEnum);
+        List<Preference> preferences = notificationPreferenceRepository
+                .findByNotificationTypeAndIsEnabled(notificationEnum, true);
 
-        return preferences.stream()
+        return userMapper.toDtoList(preferences.stream()
                 .map(Preference::getUser)  // Get the associated user
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

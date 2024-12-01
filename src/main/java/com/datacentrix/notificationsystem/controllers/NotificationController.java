@@ -1,5 +1,6 @@
 package com.datacentrix.notificationsystem.controllers;
 
+import com.datacentrix.notificationsystem.dto.NotificationDto;
 import com.datacentrix.notificationsystem.entity.Notification;
 import com.datacentrix.notificationsystem.services.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +19,17 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping
-    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
-        notificationService.sendNotification(notification);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<NotificationDto> createNotification(@RequestBody NotificationDto notification) {
+        return ResponseEntity.ok(notificationService.sendNotification(notification));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Notification>> getNotifications(@PathVariable Long userId) {
+    public ResponseEntity<List<NotificationDto>> getNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getNotificationsForUser(userId));
     }
 
     @GetMapping()
-    public ResponseEntity<List<Notification>> getAll() {
+    public ResponseEntity<List<NotificationDto>> getAll() {
         return ResponseEntity.ok(notificationService.getAll());
     }
 }
