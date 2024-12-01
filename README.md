@@ -74,3 +74,35 @@ Below is the high-level architecture of the Task Notification System, showing th
 * Spring Boot App (WebSocket Server): The backend application handles notification logic, WebSocket communication, and integrates with the database and caching layer.
 * Caching Layer ( Redis): Frequently accessed task data is stored in a caching system to improve performance and reduce database load.
 * Database: The database persists all notification-related data and user information.
+
+
+# APIS
+
+* Register -Create New User
+
+![image](https://github.com/user-attachments/assets/c9af3132-7fe3-4738-ae57-736deb79baa9)
+
+
+* Login - Get Auth Token
+
+![image](https://github.com/user-attachments/assets/b750223e-3a6a-47f5-8cf5-9e06c0858b02)
+
+* Get All Notifications
+
+![image](https://github.com/user-attachments/assets/074a7dc8-c840-416d-ab0b-351c1a456905)
+
+* Get Preferences -  Notification Settings
+
+![image](https://github.com/user-attachments/assets/02c3a6bb-3a85-46cf-85fe-9e380f666bc4)
+
+
+* Add Notifications
+
+![image](https://github.com/user-attachments/assets/0ddbd4d5-2561-41c9-87d2-2e843495fbd1)
+
+* Add Preferenes
+
+![image](https://github.com/user-attachments/assets/bf9ed0c3-b8a1-4161-b60a-9333b0ea73b2)
+
+
+
