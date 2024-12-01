@@ -11,7 +11,7 @@ public class PrefernceDTO {
     private Long Id;
     private UserDTO user;
     private NotificationType notificationType;
-    private Boolean isEnabled;
-    private LocalDateTime createdAt ;
-    private LocalDateTime updatedAt ;
+    private Boolean isEnabled = false;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt  = LocalDateTime.now();
 }

@@ -23,7 +23,6 @@ public class RegistrationController {
     @PostMapping
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationDto registrationDto) {
         try {
-            registrationService.registerUser(registrationDto);
             return ResponseEntity.ok(registrationService.registerUser(registrationDto));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
